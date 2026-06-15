@@ -1,0 +1,21 @@
+frontend:
+  image:
+    tag: "dev"
+  replicaCount: 1
+  env:
+    NEXT_PUBLIC_API_URL: "https://dev.nexaflow.site"
+backend:
+  image:
+    tag: "dev"
+  replicaCount: 1
+  env:
+    APP_ENV: "dev"
+    PUBLIC_APP_URL: "https://dev.nexaflow.site"
+    PUBLIC_API_URL: "https://dev.nexaflow.site"
+    CORS_ALLOWED_ORIGINS: "https://dev.nexaflow.site"
+emailWorker:
+  replicaCount: 1
+gateway:
+  hostname: "dev.nexaflow.site"
+  hostnames:
+    - "dev.nexaflow.site"
