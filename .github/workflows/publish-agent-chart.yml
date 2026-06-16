@@ -1,0 +1,32 @@
+name: Publish agent Helm chart
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: acr-publish
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Package and push chart
+        shell: bash
+        run: |
+          set -euo pipefail
+          LOGIN_SERVER="$(az acr show --name "${{ secrets.ACR_NAME }}" --query loginServer -o tsv)"
+          ACCESS_TOKEN="$(az acr login --name "${{ secrets.ACR_NAME }}" --expose-token --query accessToken -o tsv)"
+          helm registry login "$LOGIN_SERVER" \
+            --username 00000000-0000-0000-0000-000000000000 \
+            --password "$ACCESS_TOKEN"
+          helm package charts/clusterwatch-agent --destination /tmp/clustersage-agent-chart
+          helm push /tmp/clustersage-agent-chart/*.tgz "oci://$LOGIN_SERVER/helm"

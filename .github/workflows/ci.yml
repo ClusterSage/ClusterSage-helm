@@ -1,0 +1,28 @@
+name: Helm CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  helm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+      - name: Lint platform chart
+        run: helm lint charts/clustersage
+      - name: Render platform chart
+        run: |
+          helm template clustersage-dev charts/clustersage -n clustersage -f charts/clustersage/values-dev.yaml
+          helm template clustersage-staging charts/clustersage -n clustersage -f charts/clustersage/values-staging.yaml
+          helm template clustersage-prod charts/clustersage -n clustersage -f charts/clustersage/values-prod.yaml
+      - name: Lint agent chart
+        run: helm lint charts/clusterwatch-agent
+      - name: Render agent chart
+        run: helm template clusterwatch-agent charts/clusterwatch-agent -n clusterwatch-agent -f charts/clusterwatch-agent/values.customer.example.yaml
