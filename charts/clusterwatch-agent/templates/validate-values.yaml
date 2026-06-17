@@ -4,3 +4,15 @@
 {{- if contains "acrcwagentpubcwb1rqcvlk.azurecr.io" .Values.agent.image.repository -}}
 {{- fail "agent.image.repository points to acrcwagentpubcwb1rqcvlk.azurecr.io, which does not resolve. Use acrkubesageprod.azurecr.io/clustersage-agent instead." -}}
 {{- end -}}
+{{- if and .Values.remediation.enabled (not .Values.rbac.create) -}}
+{{- fail "remediation.enabled=true requires rbac.create=true so the chart can grant the minimal remediation permissions." -}}
+{{- end -}}
+{{- if and .Values.remediation.enabled (not .Values.remediation.clusterWide) (eq (len .Values.remediation.allowedNamespaces) 0) -}}
+{{- fail "remediation.enabled=true requires either remediation.allowedNamespaces to contain at least one namespace or remediation.clusterWide=true." -}}
+{{- end -}}
+{{- if and .Values.remediation.clusterWide (not .Values.remediation.enabled) -}}
+{{- fail "remediation.clusterWide=true requires remediation.enabled=true." -}}
+{{- end -}}
+{{- if and .Values.remediation.enabled (not (has "rollout_restart" .Values.remediation.allowedActions)) -}}
+{{- fail "remediation.allowedActions must include rollout_restart when remediation is enabled." -}}
+{{- end -}}

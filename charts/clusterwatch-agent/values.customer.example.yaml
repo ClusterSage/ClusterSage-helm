@@ -14,3 +14,11 @@ agent:
     repository: "acrkubesageprod.azurecr.io/clustersage-agent"
     tag: "stable"
     pullPolicy: IfNotPresent
+
+remediation:
+  enabled: false
+  clusterWide: false
+  allowedNamespaces: []
+  allowedActions:
+    - rollout_restart
+  pollIntervalSeconds: 30

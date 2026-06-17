@@ -1,0 +1,31 @@
+{{- if and .Values.rbac.create .Values.remediation.enabled (not .Values.remediation.clusterWide) }}
+{{- range $namespace := .Values.remediation.allowedNamespaces }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: clusterwatch-agent-remediation
+  namespace: {{ $namespace }}
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "patch"]
+  - apiGroups: ["apps"]
+    resources: ["replicasets"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: clusterwatch-agent-remediation
+  namespace: {{ $namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: clusterwatch-agent
+    namespace: {{ $.Release.Namespace }}
+roleRef:
+  kind: Role
+  name: clusterwatch-agent-remediation
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
+{{- end }}

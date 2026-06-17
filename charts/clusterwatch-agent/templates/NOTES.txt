@@ -5,6 +5,21 @@ Verify:
   kubectl logs deploy/clusterwatch-collector -n {{ .Release.Namespace }}
   kubectl get daemonset clusterwatch-fluent-bit -n {{ .Release.Namespace }}
 
+Remediation:
+{{- if .Values.remediation.enabled }}
+  enabled: true
+{{- if .Values.remediation.clusterWide }}
+  scope: cluster-wide minimal Deployment get/patch plus ReplicaSet get/list
+{{- else }}
+  scope: namespace-scoped minimal Deployment get/patch plus ReplicaSet get/list
+  namespaces: {{ join ", " .Values.remediation.allowedNamespaces }}
+{{- end }}
+  actions: {{ join ", " .Values.remediation.allowedActions }}
+{{- else }}
+  enabled: false
+  note: no remediation write RBAC was installed; the agent remains read-only.
+{{- end }}
+
 Uninstall:
   helm uninstall {{ .Release.Name }} -n {{ .Release.Namespace }}
   kubectl delete namespace {{ .Release.Namespace }}

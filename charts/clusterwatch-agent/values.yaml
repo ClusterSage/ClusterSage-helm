@@ -15,6 +15,14 @@ agent:
   logLevel: "info"
   heartbeatIntervalSeconds: 30
   snapshotIntervalSeconds: 60
+remediation:
+  enabled: false
+  clusterWide: false
+  allowedNamespaces: []
+  allowedActions:
+    - rollout_restart
+  pollIntervalSeconds: 30
+  requireServerApproval: true
 fluentbit:
   enabled: true
   image:

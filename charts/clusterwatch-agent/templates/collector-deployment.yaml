@@ -43,6 +43,16 @@ spec:
               value: {{ .Values.agent.heartbeatIntervalSeconds | quote }}
             - name: CLUSTERWATCH_SNAPSHOT_INTERVAL_SECONDS
               value: {{ .Values.agent.snapshotIntervalSeconds | quote }}
+            - name: CLUSTERWATCH_REMEDIATION_ENABLED
+              value: {{ .Values.remediation.enabled | quote }}
+            - name: CLUSTERWATCH_REMEDIATION_CLUSTER_WIDE
+              value: {{ .Values.remediation.clusterWide | quote }}
+            - name: CLUSTERWATCH_REMEDIATION_ALLOWED_NAMESPACES
+              value: {{ join "," .Values.remediation.allowedNamespaces | quote }}
+            - name: CLUSTERWATCH_REMEDIATION_ALLOWED_ACTIONS
+              value: {{ join "," .Values.remediation.allowedActions | quote }}
+            - name: CLUSTERWATCH_REMEDIATION_POLL_INTERVAL_SECONDS
+              value: {{ .Values.remediation.pollIntervalSeconds | quote }}
             - name: CLUSTERWATCH_LOG_LEVEL
               value: {{ .Values.agent.logLevel | quote }}
           envFrom:
