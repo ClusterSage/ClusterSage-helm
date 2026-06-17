@@ -18,14 +18,42 @@ spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
       imagePullSecrets:
 {{ toYaml .Values.global.imagePullSecrets | indent 8 }}
+      {{- if .Values.keyVault.enabled }}
+      volumes:
+        - name: keyvault-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ .Values.keyVault.providerClassName | quote }}
+      {{- end }}
       containers:
         - name: backend
           image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
           imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+          {{- if .Values.keyVault.enabled }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              for file in {{ .Values.keyVault.mountPath }}/*; do
+                [ -f "$file" ] || continue
+                export "$(basename "$file")=$(cat "$file")"
+              done
+              exec uvicorn app.main:app --host 0.0.0.0 --port 8000
+          {{- end }}
           ports: [{ name: http, containerPort: 8000 }]
           envFrom:
             - configMapRef: { name: clustersage-config }
+            {{- if not .Values.keyVault.enabled }}
             - secretRef: { name: clustersage-secrets }
+            {{- end }}
+          {{- if .Values.keyVault.enabled }}
+          volumeMounts:
+            - name: keyvault-secrets
+              mountPath: {{ .Values.keyVault.mountPath | quote }}
+              readOnly: true
+          {{- end }}
           readinessProbe:
             httpGet: { path: /health, port: http }
             initialDelaySeconds: 10

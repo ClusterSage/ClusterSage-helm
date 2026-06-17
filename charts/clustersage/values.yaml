@@ -7,6 +7,14 @@ serviceAccount:
   name: "clustersage-workloads"
   annotations: {}
 podLabels: {}
+keyVault:
+  enabled: false
+  providerClassName: "clustersage-keyvault"
+  mountPath: "/mnt/secrets-store"
+  vaultName: ""
+  tenantId: ""
+  clientId: ""
+  objects: []
 frontend:
   image:
     repository: "acrclustersage.azurecr.io/clustersage-frontend"

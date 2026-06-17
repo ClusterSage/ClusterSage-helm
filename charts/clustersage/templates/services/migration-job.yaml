@@ -8,12 +8,41 @@ spec:
   template:
     spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- if .Values.keyVault.enabled }}
+      volumes:
+        - name: keyvault-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ .Values.keyVault.providerClassName | quote }}
+      {{- end }}
       restartPolicy: OnFailure
       containers:
         - name: migrate
           image: "{{ default .Values.backend.image.repository .Values.migrationJob.image.repository }}:{{ default .Values.backend.image.tag .Values.migrationJob.image.tag }}"
+          {{- if .Values.keyVault.enabled }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              for file in {{ .Values.keyVault.mountPath }}/*; do
+                [ -f "$file" ] || continue
+                export "$(basename "$file")=$(cat "$file")"
+              done
+              exec alembic upgrade head
+          {{- else }}
           command: ["alembic", "upgrade", "head"]
+          {{- end }}
           envFrom:
             - configMapRef: { name: clustersage-config }
+            {{- if not .Values.keyVault.enabled }}
             - secretRef: { name: clustersage-secrets }
+            {{- end }}
+          {{- if .Values.keyVault.enabled }}
+          volumeMounts:
+            - name: keyvault-secrets
+              mountPath: {{ .Values.keyVault.mountPath | quote }}
+              readOnly: true
+          {{- end }}
 {{- end }}
