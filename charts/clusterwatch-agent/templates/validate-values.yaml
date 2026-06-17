@@ -1,8 +1,11 @@
 {{- if not .Values.agent.image.repository -}}
-{{- fail "agent.image.repository is required. Set it to acrkubesageprod.azurecr.io/clustersage-agent or another valid ClusterSage agent image repository." -}}
+{{- fail "agent.image.repository is required. Set it to acrclustersage.azurecr.io/clustersage-agent or another valid ClusterSage agent image repository." -}}
 {{- end -}}
 {{- if contains "acrcwagentpubcwb1rqcvlk.azurecr.io" .Values.agent.image.repository -}}
-{{- fail "agent.image.repository points to acrcwagentpubcwb1rqcvlk.azurecr.io, which does not resolve. Use acrkubesageprod.azurecr.io/clustersage-agent instead." -}}
+{{- fail "agent.image.repository points to acrcwagentpubcwb1rqcvlk.azurecr.io, which does not resolve. Use acrclustersage.azurecr.io/clustersage-agent instead." -}}
+{{- end -}}
+{{- if contains "acrkubesageprod.azurecr.io" .Values.agent.image.repository -}}
+{{- fail "agent.image.repository points to acrkubesageprod.azurecr.io, which does not resolve. Use acrclustersage.azurecr.io/clustersage-agent instead." -}}
 {{- end -}}
 {{- if and .Values.remediation.enabled (not .Values.rbac.create) -}}
 {{- fail "remediation.enabled=true requires rbac.create=true so the chart can grant the minimal remediation permissions." -}}

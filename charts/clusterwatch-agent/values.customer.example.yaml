@@ -11,7 +11,7 @@ cluster:
 
 agent:
   image:
-    repository: "acrkubesageprod.azurecr.io/clustersage-agent"
+    repository: "acrclustersage.azurecr.io/clustersage-agent"
     tag: "stable"
     pullPolicy: IfNotPresent
 
