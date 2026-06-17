@@ -33,8 +33,8 @@ backend:
     EMAIL_SENDER_ADDRESS: ""
   secrets:
     DATABASE_URL: ""
-    JWT_SECRET: ""
-    AGENT_TOKEN_SECRET: ""
+    JWT_SECRET: "ougaidkdyatvyavdkaydv"
+    AGENT_TOKEN_SECRET: "jadoaulbuydavlatdktva7a"
     AZURE_STORAGE_CONNECTION_STRING: ""
     AZURE_SERVICEBUS_CONNECTION_STRING: ""
     AZURE_COMMUNICATION_EMAIL_CONNECTION_STRING: ""
