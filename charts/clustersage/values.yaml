@@ -54,3 +54,7 @@ gateway:
   hostnames: []
 migrations:
   enabled: true
+migrationJob:
+  image:
+    repository: ""
+    tag: ""

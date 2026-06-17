@@ -11,7 +11,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: migrate
-          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          image: "{{ default .Values.backend.image.repository .Values.migrationJob.image.repository }}:{{ default .Values.backend.image.tag .Values.migrationJob.image.tag }}"
           command: ["alembic", "upgrade", "head"]
           envFrom:
             - configMapRef: { name: clustersage-config }
