@@ -41,6 +41,10 @@ backend:
 emailWorker:
   enabled: true
   replicaCount: 1
+  image:
+    repository: "acrclustersage.azurecr.io/clustersage-email-worker"
+    tag: "0.1.0"
+    pullPolicy: IfNotPresent
 gateway:
   enabled: true
   className: "kgateway"

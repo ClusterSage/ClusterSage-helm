@@ -21,9 +21,8 @@ spec:
 {{ toYaml .Values.global.imagePullSecrets | indent 8 }}
       containers:
         - name: email-worker
-          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
-          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
-          command: ["python", "-m", "app.workers.email_worker"]
+          image: "{{ .Values.emailWorker.image.repository }}:{{ .Values.emailWorker.image.tag }}"
+          imagePullPolicy: {{ .Values.emailWorker.image.pullPolicy }}
           envFrom:
             - configMapRef: { name: clustersage-config }
             - secretRef: { name: clustersage-secrets }

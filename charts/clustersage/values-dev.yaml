@@ -14,6 +14,8 @@ backend:
     PUBLIC_API_URL: "https://dev.nexaflow.site"
     CORS_ALLOWED_ORIGINS: "https://dev.nexaflow.site"
 emailWorker:
+  image:
+    tag: "dev"
   replicaCount: 1
 gateway:
   hostname: "dev.nexaflow.site"
