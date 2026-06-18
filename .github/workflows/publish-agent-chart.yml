@@ -32,6 +32,7 @@ jobs:
           [ -n "${AZURE_TENANT_ID}" ] || { echo "Missing AZURE_TENANT_ID. Add it as an org/repo secret or variable."; exit 1; }
           [ -n "${AZURE_SUBSCRIPTION_ID}" ] || { echo "Missing AZURE_SUBSCRIPTION_ID. Add it as an org/repo secret or variable."; exit 1; }
           [ -n "${{ vars.ACR_NAME }}" ] || { echo "Missing ACR_NAME variable."; exit 1; }
+          [ -n "${{ vars.ACR_LOGIN_SERVER }}" ] || { echo "Missing ACR_LOGIN_SERVER variable."; exit 1; }
       - uses: azure/login@v2
         with:
           client-id: ${{ env.AZURE_CLIENT_ID }}
@@ -42,7 +43,7 @@ jobs:
         run: |
           set -euo pipefail
           CHART_VERSION="$(grep '^version:' charts/clusterwatch-agent/Chart.yaml | awk '{print $2}')"
-          LOGIN_SERVER="$(az acr show --name "${{ vars.ACR_NAME }}" --query loginServer -o tsv)"
+          LOGIN_SERVER="${{ vars.ACR_LOGIN_SERVER }}"
           ACCESS_TOKEN="$(az acr login --name "${{ vars.ACR_NAME }}" --expose-token --query accessToken -o tsv)"
           test -n "$ACCESS_TOKEN"
           printf '%s' "$ACCESS_TOKEN" | helm registry login "$LOGIN_SERVER" \
