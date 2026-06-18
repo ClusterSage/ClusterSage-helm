@@ -42,9 +42,14 @@ jobs:
         run: |
           set -euo pipefail
           LOGIN_SERVER="$(az acr show --name "${{ vars.ACR_NAME }}" --query loginServer -o tsv)"
+          az acr login --name "${{ vars.ACR_NAME }}"
           ACCESS_TOKEN="$(az acr login --name "${{ vars.ACR_NAME }}" --expose-token --query accessToken -o tsv)"
-          helm registry login "$LOGIN_SERVER" \
+          test -n "$ACCESS_TOKEN"
+          printf '%s' "$ACCESS_TOKEN" | helm registry login "$LOGIN_SERVER" \
             --username 00000000-0000-0000-0000-000000000000 \
-            --password "$ACCESS_TOKEN"
-          helm package charts/clusterwatch-agent --destination /tmp/clustersage-agent-chart
-          helm push /tmp/clustersage-agent-chart/*.tgz "oci://$LOGIN_SERVER/helm"
+            --password-stdin
+          PACKAGE_DIR="$(mktemp -d)"
+          helm package charts/clusterwatch-agent --destination "$PACKAGE_DIR"
+          CHART_ARCHIVE="$(find "$PACKAGE_DIR" -maxdepth 1 -name '*.tgz' | head -n 1)"
+          test -n "$CHART_ARCHIVE"
+          helm push "$CHART_ARCHIVE" "oci://$LOGIN_SERVER/helm"
