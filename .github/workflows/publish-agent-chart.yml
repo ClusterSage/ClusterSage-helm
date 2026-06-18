@@ -52,4 +52,4 @@ jobs:
           helm package charts/clusterwatch-agent --destination "$PACKAGE_DIR"
           CHART_ARCHIVE="$(find "$PACKAGE_DIR" -maxdepth 1 -name '*.tgz' | head -n 1)"
           test -n "$CHART_ARCHIVE"
-          helm push "$CHART_ARCHIVE" "oci://$LOGIN_SERVER/helm"
+          helm push "$CHART_ARCHIVE" "oci://$LOGIN_SERVER"
