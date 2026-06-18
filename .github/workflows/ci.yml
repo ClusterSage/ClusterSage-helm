@@ -23,6 +23,6 @@ jobs:
           helm template clustersage-staging charts/clustersage -n clustersage -f charts/clustersage/values-staging.yaml
           helm template clustersage-prod charts/clustersage -n clustersage -f charts/clustersage/values-prod.yaml
       - name: Lint agent chart
-        run: helm lint charts/clusterwatch-agent
+        run: helm lint charts/clusterwatch-agent -f charts/clusterwatch-agent/values.customer.example.yaml
       - name: Render agent chart
         run: helm template clusterwatch-agent charts/clusterwatch-agent -n clusterwatch-agent -f charts/clusterwatch-agent/values.customer.example.yaml
