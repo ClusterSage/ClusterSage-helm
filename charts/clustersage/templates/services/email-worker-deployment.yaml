@@ -10,6 +10,11 @@ spec:
     matchLabels: { app: clustersage-email-worker }
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config/configmap.yaml") . | sha256sum }}
+        {{- if .Values.keyVault.enabled }}
+        checksum/keyvault-spc: {{ include (print $.Template.BasePath "/secrets/secretproviderclass.yaml") . | sha256sum }}
+        {{- end }}
       labels:
         app: clustersage-email-worker
 {{- with .Values.podLabels }}

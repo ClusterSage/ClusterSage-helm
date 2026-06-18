@@ -9,6 +9,8 @@ spec:
     matchLabels: { app: clustersage-frontend }
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config/configmap.yaml") . | sha256sum }}
       labels: { app: clustersage-frontend }
     spec:
       imagePullSecrets:

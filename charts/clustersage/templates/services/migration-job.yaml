@@ -2,9 +2,14 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: clustersage-migrations-{{ .Release.Revision }}
+  name: clustersage-migrations
   namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
+  ttlSecondsAfterFinished: 300
   template:
     spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
