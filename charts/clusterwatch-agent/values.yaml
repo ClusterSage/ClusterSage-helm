@@ -15,6 +15,9 @@ agent:
   logLevel: "info"
   heartbeatIntervalSeconds: 30
   snapshotIntervalSeconds: 60
+  metrics:
+    enabled: true
+    intervalSeconds: 60
 remediation:
   enabled: false
   clusterWide: false

@@ -5,6 +5,14 @@ Verify:
   kubectl logs deploy/clusterwatch-collector -n {{ .Release.Namespace }}
   kubectl get daemonset clusterwatch-fluent-bit -n {{ .Release.Namespace }}
 
+Metrics:
+{{- if .Values.agent.metrics.enabled }}
+  enabled: true
+  note: the agent will read the Kubernetes Metrics API if Metrics Server is installed.
+{{- else }}
+  enabled: false
+{{- end }}
+
 Remediation:
 {{- if .Values.remediation.enabled }}
   enabled: true

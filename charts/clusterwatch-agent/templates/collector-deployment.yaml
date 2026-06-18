@@ -43,6 +43,10 @@ spec:
               value: {{ .Values.agent.heartbeatIntervalSeconds | quote }}
             - name: CLUSTERWATCH_SNAPSHOT_INTERVAL_SECONDS
               value: {{ .Values.agent.snapshotIntervalSeconds | quote }}
+            - name: CLUSTERWATCH_METRICS_ENABLED
+              value: {{ .Values.agent.metrics.enabled | quote }}
+            - name: CLUSTERWATCH_METRICS_INTERVAL_SECONDS
+              value: {{ .Values.agent.metrics.intervalSeconds | quote }}
             - name: CLUSTERWATCH_REMEDIATION_ENABLED
               value: {{ .Values.remediation.enabled | quote }}
             - name: CLUSTERWATCH_REMEDIATION_CLUSTER_WIDE
