@@ -17,7 +17,7 @@ keyVault:
   objects: []
 frontend:
   image:
-    repository: "acrclustersage.azurecr.io/clustersage-frontend"
+    repository: "acrclustersage.azurecr.io/clustersage/frontend"
     tag: "0.1.0"
     pullPolicy: IfNotPresent
   replicaCount: 2
@@ -25,7 +25,7 @@ frontend:
     NEXT_PUBLIC_API_URL: ""
 backend:
   image:
-    repository: "acrclustersage.azurecr.io/clustersage-backend"
+    repository: "acrclustersage.azurecr.io/clustersage/backend"
     tag: "0.1.0"
     pullPolicy: IfNotPresent
   replicaCount: 2
@@ -42,6 +42,8 @@ backend:
     AZURE_CLIENT_ID: ""
     AI_ANALYSIS_ENABLED: "false"
     AI_CLUSTER_QUERY_ENABLED: "false"
+    ALERT_EVALUATION_ENABLED: "false"
+    ALERT_EVALUATION_INTERVAL_SECONDS: "60"
     REMEDIATION_APPROVAL_ENABLED: "true"
     AGENT_REMEDIATION_ENABLED: "false"
     AI_MAX_LOG_LINES_PER_ANALYSIS: "200"
@@ -65,7 +67,7 @@ emailWorker:
   enabled: true
   replicaCount: 1
   image:
-    repository: "acrclustersage.azurecr.io/clustersage-email-worker"
+    repository: "acrclustersage.azurecr.io/clustersage/email-worker"
     tag: "0.1.0"
     pullPolicy: IfNotPresent
 gateway:
