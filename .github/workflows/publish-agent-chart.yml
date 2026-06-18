@@ -41,10 +41,27 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          CHART_VERSION="$(grep '^version:' charts/clusterwatch-agent/Chart.yaml | awk '{print $2}')"
           LOGIN_SERVER="$(az acr show --name "${{ vars.ACR_NAME }}" --query loginServer -o tsv)"
-          az acr login --name "${{ vars.ACR_NAME }}"
+          ACCESS_TOKEN="$(az acr login --name "${{ vars.ACR_NAME }}" --expose-token --query accessToken -o tsv)"
+          test -n "$ACCESS_TOKEN"
+          printf '%s' "$ACCESS_TOKEN" | helm registry login "$LOGIN_SERVER" \
+            --username 00000000-0000-0000-0000-000000000000 \
+            --password-stdin
           PACKAGE_DIR="$(mktemp -d)"
           helm package charts/clusterwatch-agent --destination "$PACKAGE_DIR"
           CHART_ARCHIVE="$(find "$PACKAGE_DIR" -maxdepth 1 -name '*.tgz' | head -n 1)"
           test -n "$CHART_ARCHIVE"
-          helm push "$CHART_ARCHIVE" "oci://$LOGIN_SERVER"
+          OCI_REPOSITORY="oci://$LOGIN_SERVER/helm"
+          set +e
+          PUSH_OUTPUT="$(helm push "$CHART_ARCHIVE" "$OCI_REPOSITORY" 2>&1)"
+          PUSH_STATUS=$?
+          set -e
+          echo "$PUSH_OUTPUT"
+          if [ "$PUSH_STATUS" -ne 0 ]; then
+            if echo "$PUSH_OUTPUT" | grep -Eqi 'already exists|409|artifact with the same tag already exists'; then
+              echo "Chart clusterwatch-agent:${CHART_VERSION} already exists in $OCI_REPOSITORY. Treating rerun as success."
+              exit 0
+            fi
+            exit "$PUSH_STATUS"
+          fi
