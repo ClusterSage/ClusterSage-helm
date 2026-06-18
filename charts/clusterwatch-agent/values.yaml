@@ -18,6 +18,14 @@ agent:
   metrics:
     enabled: true
     intervalSeconds: 60
+    resourceUsage:
+      enabled: true
+    kubeStateMetrics:
+      enabled: true
+      url: ""
+      timeoutSeconds: 10
+    kubeletSummary:
+      enabled: true
 remediation:
   enabled: false
   clusterWide: false
@@ -35,6 +43,35 @@ fluentbit:
   excludeAgentNamespace: true
 rbac:
   create: true
+addons:
+  kubeStateMetrics:
+    enabled: true
+    image:
+      repository: "registry.k8s.io/kube-state-metrics/kube-state-metrics"
+      tag: "v2.19.1"
+      pullPolicy: IfNotPresent
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "128Mi"
+      limits:
+        cpu: "300m"
+        memory: "256Mi"
+  metricsServer:
+    enabled: false
+    insecureKubeletTls: true
+    metricResolution: "15s"
+    image:
+      repository: "registry.k8s.io/metrics-server/metrics-server"
+      tag: "v0.8.1"
+      pullPolicy: IfNotPresent
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "200Mi"
+      limits:
+        cpu: "300m"
+        memory: "400Mi"
 resources:
   collector:
     requests:

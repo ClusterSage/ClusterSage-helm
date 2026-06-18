@@ -1,0 +1,14 @@
+{{- if .Values.addons.kubeStateMetrics.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: clusterwatch-kube-state-metrics-{{ .Release.Namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: clusterwatch-kube-state-metrics
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: clusterwatch-kube-state-metrics-{{ .Release.Namespace }}
+{{- end }}

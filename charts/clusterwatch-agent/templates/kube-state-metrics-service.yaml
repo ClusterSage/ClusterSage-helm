@@ -1,0 +1,18 @@
+{{- if .Values.addons.kubeStateMetrics.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: clusterwatch-kube-state-metrics
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: clusterwatch-agent
+    app.kubernetes.io/component: kube-state-metrics
+spec:
+  selector:
+    app.kubernetes.io/name: clusterwatch-agent
+    app.kubernetes.io/component: kube-state-metrics
+  ports:
+    - name: http-metrics
+      port: 8080
+      targetPort: http-metrics
+{{- end }}

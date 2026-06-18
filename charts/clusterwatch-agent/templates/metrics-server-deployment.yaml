@@ -1,0 +1,58 @@
+{{- if .Values.addons.metricsServer.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clusterwatch-metrics-server
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: clusterwatch-agent
+    app.kubernetes.io/component: metrics-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: clusterwatch-agent
+      app.kubernetes.io/component: metrics-server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: clusterwatch-agent
+        app.kubernetes.io/component: metrics-server
+    spec:
+      serviceAccountName: clusterwatch-metrics-server
+      priorityClassName: system-cluster-critical
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      containers:
+        - name: metrics-server
+          image: "{{ .Values.addons.metricsServer.image.repository }}:{{ .Values.addons.metricsServer.image.tag }}"
+          imagePullPolicy: {{ .Values.addons.metricsServer.image.pullPolicy }}
+          args:
+            - --cert-dir=/tmp
+            - --secure-port=10250
+            - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+            - --metric-resolution={{ .Values.addons.metricsServer.metricResolution }}
+            - --kubelet-use-node-status-port
+            {{- if .Values.addons.metricsServer.insecureKubeletTls }}
+            - --kubelet-insecure-tls
+            {{- end }}
+          ports:
+            - name: https
+              containerPort: 10250
+          livenessProbe:
+            httpGet:
+              path: /livez
+              port: https
+              scheme: HTTPS
+            initialDelaySeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: https
+              scheme: HTTPS
+            initialDelaySeconds: 20
+          resources:
+{{ toYaml .Values.addons.metricsServer.resources | indent 12 }}
+{{- end }}

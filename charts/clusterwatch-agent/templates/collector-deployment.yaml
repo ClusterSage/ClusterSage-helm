@@ -33,6 +33,10 @@ spec:
           env:
             - name: CLUSTERWATCH_BACKEND_URL
               value: {{ .Values.backend.url | quote }}
+            - name: CLUSTERWATCH_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
             - name: CLUSTERWATCH_CLUSTER_NAME
               value: {{ .Values.cluster.name | quote }}
             - name: CLUSTERWATCH_CLUSTER_PROVIDER
@@ -47,6 +51,16 @@ spec:
               value: {{ .Values.agent.metrics.enabled | quote }}
             - name: CLUSTERWATCH_METRICS_INTERVAL_SECONDS
               value: {{ .Values.agent.metrics.intervalSeconds | quote }}
+            - name: CLUSTERWATCH_METRICS_RESOURCE_USAGE_ENABLED
+              value: {{ .Values.agent.metrics.resourceUsage.enabled | quote }}
+            - name: CLUSTERWATCH_METRICS_KUBE_STATE_ENABLED
+              value: {{ .Values.agent.metrics.kubeStateMetrics.enabled | quote }}
+            - name: CLUSTERWATCH_METRICS_KUBE_STATE_URL
+              value: {{ .Values.agent.metrics.kubeStateMetrics.url | quote }}
+            - name: CLUSTERWATCH_METRICS_KUBE_STATE_TIMEOUT_SECONDS
+              value: {{ .Values.agent.metrics.kubeStateMetrics.timeoutSeconds | quote }}
+            - name: CLUSTERWATCH_METRICS_KUBELET_SUMMARY_ENABLED
+              value: {{ .Values.agent.metrics.kubeletSummary.enabled | quote }}
             - name: CLUSTERWATCH_REMEDIATION_ENABLED
               value: {{ .Values.remediation.enabled | quote }}
             - name: CLUSTERWATCH_REMEDIATION_CLUSTER_WIDE

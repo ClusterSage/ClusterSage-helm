@@ -14,6 +14,23 @@ agent:
     repository: "acrclustersage.azurecr.io/clustersage-agent"
     tag: "stable"
     pullPolicy: IfNotPresent
+  metrics:
+    enabled: true
+    intervalSeconds: 60
+    resourceUsage:
+      enabled: true
+    kubeStateMetrics:
+      enabled: true
+      url: ""
+      timeoutSeconds: 10
+    kubeletSummary:
+      enabled: true
+
+addons:
+  kubeStateMetrics:
+    enabled: true
+  metricsServer:
+    enabled: false
 
 remediation:
   enabled: false

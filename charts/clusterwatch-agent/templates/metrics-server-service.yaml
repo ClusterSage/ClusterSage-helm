@@ -1,0 +1,18 @@
+{{- if .Values.addons.metricsServer.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: clusterwatch-metrics-server
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: clusterwatch-agent
+    app.kubernetes.io/component: metrics-server
+spec:
+  selector:
+    app.kubernetes.io/name: clusterwatch-agent
+    app.kubernetes.io/component: metrics-server
+  ports:
+    - name: https
+      port: 443
+      targetPort: https
+{{- end }}

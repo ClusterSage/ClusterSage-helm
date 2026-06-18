@@ -1,0 +1,39 @@
+{{- if .Values.addons.kubeStateMetrics.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clusterwatch-kube-state-metrics
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: clusterwatch-agent
+    app.kubernetes.io/component: kube-state-metrics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: clusterwatch-agent
+      app.kubernetes.io/component: kube-state-metrics
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: clusterwatch-agent
+        app.kubernetes.io/component: kube-state-metrics
+    spec:
+      serviceAccountName: clusterwatch-kube-state-metrics
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      containers:
+        - name: kube-state-metrics
+          image: "{{ .Values.addons.kubeStateMetrics.image.repository }}:{{ .Values.addons.kubeStateMetrics.image.tag }}"
+          imagePullPolicy: {{ .Values.addons.kubeStateMetrics.image.pullPolicy }}
+          args:
+            - --host=0.0.0.0
+            - --port=8080
+          ports:
+            - name: http-metrics
+              containerPort: 8080
+          resources:
+{{ toYaml .Values.addons.kubeStateMetrics.resources | indent 12 }}
+{{- end }}

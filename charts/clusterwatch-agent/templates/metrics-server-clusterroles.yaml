@@ -1,0 +1,26 @@
+{{- if .Values.addons.metricsServer.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: clusterwatch-metrics-server-aggregated-reader-{{ .Release.Namespace }}
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+    rbac.authorization.k8s.io/aggregate-to-view: "true"
+rules:
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods", "nodes"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: clusterwatch-metrics-server-{{ .Release.Namespace }}
+rules:
+  - apiGroups: [""]
+    resources: ["nodes", "nodes/stats", "pods", "namespaces"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["nodes/metrics", "nodes/proxy"]
+    verbs: ["get"]
+{{- end }}
