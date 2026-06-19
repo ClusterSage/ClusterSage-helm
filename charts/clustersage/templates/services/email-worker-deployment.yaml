@@ -35,7 +35,7 @@ spec:
       {{- end }}
       containers:
         - name: email-worker
-          image: "{{ .Values.emailWorker.image.repository }}:{{ .Values.emailWorker.image.tag }}"
+          image: "{{ include "clustersage.image" (dict "image" .Values.emailWorker.image) }}"
           imagePullPolicy: {{ .Values.emailWorker.image.pullPolicy }}
           {{- if .Values.keyVault.enabled }}
           command:

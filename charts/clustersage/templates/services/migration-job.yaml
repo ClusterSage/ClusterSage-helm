@@ -1,3 +1,4 @@
+{{- $migrationImage := dict "repository" (default .Values.backend.image.repository .Values.migrationJob.image.repository) "tag" (default .Values.backend.image.tag .Values.migrationJob.image.tag) "digest" (default .Values.backend.image.digest .Values.migrationJob.image.digest) -}}
 {{- if .Values.migrations.enabled }}
 apiVersion: batch/v1
 kind: Job
@@ -25,7 +26,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: migrate
-          image: "{{ default .Values.backend.image.repository .Values.migrationJob.image.repository }}:{{ default .Values.backend.image.tag .Values.migrationJob.image.tag }}"
+          image: "{{ include "clustersage.image" (dict "image" $migrationImage) }}"
           {{- if .Values.keyVault.enabled }}
           command:
             - /bin/sh

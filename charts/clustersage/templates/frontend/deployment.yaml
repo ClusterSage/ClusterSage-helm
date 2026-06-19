@@ -17,7 +17,7 @@ spec:
 {{ toYaml .Values.global.imagePullSecrets | indent 8 }}
       containers:
         - name: frontend
-          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+          image: "{{ include "clustersage.image" (dict "image" .Values.frontend.image) }}"
           imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
           ports: [{ name: http, containerPort: 3000 }]
           env:

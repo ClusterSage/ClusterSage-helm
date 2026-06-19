@@ -34,7 +34,7 @@ spec:
       {{- end }}
       containers:
         - name: backend
-          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          image: "{{ include "clustersage.image" (dict "image" .Values.backend.image) }}"
           imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
           {{- if .Values.keyVault.enabled }}
           command:
