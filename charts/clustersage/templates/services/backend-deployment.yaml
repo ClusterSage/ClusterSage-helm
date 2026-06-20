@@ -60,5 +60,10 @@ spec:
               readOnly: true
           {{- end }}
           readinessProbe:
-            httpGet: { path: /health, port: http }
-            initialDelaySeconds: 10
+{{ toYaml .Values.backend.probes.readiness | indent 12 }}
+          livenessProbe:
+{{ toYaml .Values.backend.probes.liveness | indent 12 }}
+          startupProbe:
+{{ toYaml .Values.backend.probes.startup | indent 12 }}
+          resources:
+{{ toYaml .Values.backend.resources | indent 12 }}

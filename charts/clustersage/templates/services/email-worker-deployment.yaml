@@ -59,4 +59,6 @@ spec:
               mountPath: {{ .Values.keyVault.mountPath | quote }}
               readOnly: true
           {{- end }}
+          resources:
+{{ toYaml .Values.emailWorker.resources | indent 12 }}
 {{- end }}

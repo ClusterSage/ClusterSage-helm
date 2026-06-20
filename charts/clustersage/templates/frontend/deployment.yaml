@@ -11,7 +11,11 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config/configmap.yaml") . | sha256sum }}
-      labels: { app: clustersage-frontend }
+      labels:
+        app: clustersage-frontend
+{{- with .Values.podLabels }}
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       imagePullSecrets:
 {{ toYaml .Values.global.imagePullSecrets | indent 8 }}
@@ -23,3 +27,11 @@ spec:
           env:
             - name: NEXT_PUBLIC_API_URL
               valueFrom: { configMapKeyRef: { name: clustersage-config, key: NEXT_PUBLIC_API_URL } }
+          readinessProbe:
+{{ toYaml .Values.frontend.probes.readiness | indent 12 }}
+          livenessProbe:
+{{ toYaml .Values.frontend.probes.liveness | indent 12 }}
+          startupProbe:
+{{ toYaml .Values.frontend.probes.startup | indent 12 }}
+          resources:
+{{ toYaml .Values.frontend.resources | indent 12 }}
