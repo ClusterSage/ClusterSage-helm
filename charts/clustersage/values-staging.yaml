@@ -13,6 +13,7 @@ backend:
     PUBLIC_APP_URL: "https://stage.nexaflow.site"
     PUBLIC_API_URL: "https://stage.nexaflow.site"
     CORS_ALLOWED_ORIGINS: "https://stage.nexaflow.site"
+    AI_AGENT_ENABLED: "false"
 emailWorker:
   image:
     tag: "staging"

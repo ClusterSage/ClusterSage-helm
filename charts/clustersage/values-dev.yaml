@@ -18,6 +18,7 @@ backend:
     PUBLIC_APP_URL: "https://dev.nexaflow.site"
     PUBLIC_API_URL: "https://dev.nexaflow.site"
     CORS_ALLOWED_ORIGINS: "https://dev.nexaflow.site"
+    AI_AGENT_ENABLED: "false"
 emailWorker:
   image:
     tag: "dev"
